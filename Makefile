@@ -8,14 +8,15 @@ build:
 
 # Run with Host Networking (Crucial for Ollama/Postgres access)
 run:
-	@echo "🚀 Starting Backend on Port 3000..."
+	@echo "🚀 Starting Backend on Port 3001..."
 	docker run -d \
 		--name $(CONTAINER_NAME) \
+		-p 3001:3000 \
 		--network="host" \
 		--env-file .env \
 		--restart always \
 		$(IMAGE_NAME)
-	@echo "✅ Backend is running at http://localhost:3000"
+	@echo "✅ Backend is running at http://localhost:3001"
 
 # Stop and remove the container
 stop:

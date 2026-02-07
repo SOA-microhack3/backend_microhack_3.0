@@ -1,5 +1,5 @@
 # Use Node 18 Alpine (Lightweight)
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Set working directory
 WORKDIR /usr/src/app
@@ -14,14 +14,12 @@ RUN npm install
 COPY . .
 
 # Generate Prisma Client (CRITICAL for Database access)
-# If you don't use Prisma, remove this line.
-RUN npx prisma generate
 
 # Build the NestJS application
 RUN npm run build
 
 # Expose the API port
-EXPOSE 3000
+EXPOSE 3001
 
 # Start the server (using the built file, not dev mode)
 CMD ["node", "dist/main"]

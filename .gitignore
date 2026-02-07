@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Production Build
+dist/
+build/
+
+
+
+# Docker & Database Volumes (Don't commit massive data folders)
+postgres_data/
+pgdata/
+ollama_data/
+.ollama/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# IDE & Editor Junk
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Testing Coverage
+coverage/
+
+# NestJS CLI
+.nest-cli.json

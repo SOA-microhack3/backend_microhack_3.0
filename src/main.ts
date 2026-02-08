@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
+import * as os from 'os';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -52,13 +53,40 @@ async function bootstrap() {
     .addTag('Dashboard', 'Dashboard endpoints')
     .addTag('AI Integration', 'AI helpdesk integration')
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
   const port = configService.get('port') || 3000;
-  await app.listen(port);
 
-  console.log(`🚀 Application running on: http://localhost:${port}`);
-  console.log(`📚 Swagger docs: http://localhost:${port}/api/docs`);
+  // Listen on 0.0.0.0 to accept external connections
+  await app.listen(port, '0.0.0.0');
+
+  // --- IP DETECTION LOGIC ---
+  const networkInterfaces = os.networkInterfaces();
+  let myIp = 'localhost';
+
+  for (const interfaceName of Object.keys(networkInterfaces)) {
+    const interfaces = networkInterfaces[interfaceName];
+
+    // FIX: Check if interfaces is defined before iterating
+    if (interfaces) {
+      for (const iface of interfaces) {
+        // Skip internal (non-127.0.0.1) and non-ipv4 addresses
+        if (iface.family === 'IPv4' && !iface.internal) {
+          myIp = iface.address;
+          break;
+        }
+      }
+    }
+
+    if (myIp !== 'localhost') break;
+  }
+  // --------------------------
+
+  console.log(`\n🚀 Application running!`);
+  console.log(`🏠 Local:   http://localhost:${port}/api`);
+  console.log(`📡 Network: http://${myIp}:${port}/api`);
+  console.log(`📚 Swagger: http://${myIp}:${port}/api/docs\n`);
 }
 bootstrap();
